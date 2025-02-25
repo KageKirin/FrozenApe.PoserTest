@@ -184,7 +184,17 @@ namespace Game
                     }
                 }
 
-                state = State.Idle;
+                state = State.Exit;
             }
+
+            if (state == State.Exit)
+            {
+                if (Application.isBatchMode)
+                {
+                    Application.Quit();
+                    state = State.Idle; //until exit
+                }
+            }
+        }
     }
 }
