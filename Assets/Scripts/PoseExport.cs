@@ -21,6 +21,7 @@ namespace Game
 
         public State state = State.Idle;
         public GameObject targetGameObject;
+        public GameObject frozenGameObject;
         public PosedBoneContainer posedBones;
 
         void Start()
@@ -67,7 +68,41 @@ namespace Game
 
                 rigPuppeteer.Pose(transforms, posedBones.bones);
 
-                state = State.Idle;
+                state = State.Freeze;
+            }
+
+            if (state == State.Freeze)
+            {
+                IPoseFreezer poseFreezer = new PoseFreezer();
+                var frozenMaterials = poseFreezer.Freeze(targetGameObject);
+                frozenGameObject = new() { name = $"frozen_{targetGameObject.name}" };
+                frozenGameObject.transform.SetPositionAndRotation(
+                    targetGameObject.transform.position,
+                    targetGameObject.transform.rotation
+                );
+                frozenGameObject.transform.localScale = targetGameObject.transform.localScale;
+
+                foreach (var meshMaterials in frozenMaterials)
+                {
+                    var (mesh, materials) = meshMaterials;
+                    GameObject meshObject = new($"frozen_{mesh.name}");
+                    meshObject.transform.parent = frozenGameObject.transform;
+
+                    var meshFilter = meshObject.AddComponent<MeshFilter>();
+                    meshFilter.sharedMesh = mesh;
+
+                    var meshRenderer = meshObject.AddComponent<MeshRenderer>();
+                    meshRenderer.sharedMaterials = materials;
+                }
+
+                if (frozenGameObject == null)
+                {
+                    state = State.Idle;
+                }
+                else
+                {
+                    state = State.Idle;
+                }
             }
     }
 }
