@@ -145,11 +145,20 @@ namespace Game
                     );
                     File.WriteAllText(targetPathMtl, mtl);
 
-                    var textures = materials.Select(x => x.mainTexture);
+                    var textures = materials.Select(x => x.mainTexture).Where(x => x != null);
                     foreach (var tex in textures)
                     {
-                        //var buf = texWriter.WriteTexture(tex);
-                        //File.WriteAllBytes(texWriter.NameTexture(tex), buf);
+                        var targetPathTex = $"{Directory.GetCurrentDirectory()}/{texWriter.NameTexture(tex)}";
+                        Debug.Log($"writing {targetPathTex}");
+                        try
+                        {
+                            var buf = texWriter.WriteTexture(tex);
+                            File.WriteAllBytes(targetPathTex, buf);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError($"failed to export {tex.name}: {ex}");
+                        }
                     }
                 }
 
@@ -182,11 +191,20 @@ namespace Game
                     );
                     File.WriteAllText(targetPathMtl, mtl);
 
-                    var textures = skinnedMeshRenderer.sharedMaterials.Select(x => x.mainTexture);
+                    var textures = skinnedMeshRenderer.sharedMaterials.Select(x => x.mainTexture).Where(x => x != null);
                     foreach (var tex in textures)
                     {
-                        var buf = texWriter.WriteTexture(tex);
-                        File.WriteAllBytes(texWriter.NameTexture(tex), buf);
+                        var targetPathTex = $"{Directory.GetCurrentDirectory()}/{texWriter.NameTexture(tex)}";
+                        Debug.Log($"writing {targetPathTex}");
+                        try
+                        {
+                            var buf = texWriter.WriteTexture(tex);
+                            File.WriteAllBytes(targetPathTex, buf);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError($"failed to export {tex.name}: {ex}");
+                        }
                     }
                 }
 
