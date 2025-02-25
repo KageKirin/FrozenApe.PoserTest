@@ -101,8 +101,90 @@ namespace Game
                 }
                 else
                 {
-                    state = State.Idle;
+                    state = State.Export;
                 }
+            }
+
+            if (state == State.Export)
+            {
+                ITextureWriter texWriter = new TextureTGAWriter();
+                IWavefrontOBJWriter objWriter = new WavefrontOBJWriter();
+                IWavefrontMTLWriter mtlWriter = new WavefrontMTLWriter(texWriter);
+
+                foreach (
+                    var meshFilter in frozenGameObject.GetComponentsInChildren<MeshFilter>(true)
+                )
+                {
+                    if (meshFilter.sharedMesh == null)
+                        continue;
+
+                    var meshRenderer = meshFilter.gameObject.GetComponent<MeshRenderer>();
+                    var targetPathObj =
+                        $"{Directory.GetCurrentDirectory()}/EthanPose_{meshFilter.gameObject.name}.obj";
+                    var targetPathMtl =
+                        $"{Directory.GetCurrentDirectory()}/EthanPose_{meshFilter.gameObject.name}.mtl";
+                    var materials =
+                        meshRenderer != null
+                            ? meshRenderer.sharedMaterials
+                            : Array.Empty<Material>();
+
+                    var obj = objWriter.WriteOBJ(
+                        Path.GetFileNameWithoutExtension(targetPathObj),
+                        meshFilter.sharedMesh,
+                        materials
+                    );
+                    File.WriteAllText(targetPathObj, obj);
+
+                    var mtl = mtlWriter.WriteMTL(
+                        Path.GetFileNameWithoutExtension(targetPathMtl),
+                        materials
+                    );
+                    File.WriteAllText(targetPathMtl, mtl);
+
+                    var textures = materials.Select(x => x.mainTexture);
+                    foreach (var tex in textures)
+                    {
+                        //var buf = texWriter.WriteTexture(tex);
+                        //File.WriteAllBytes(texWriter.NameTexture(tex), buf);
+                    }
+                }
+
+                foreach (
+                    var skinnedMeshRenderer in frozenGameObject.GetComponentsInChildren<SkinnedMeshRenderer>(
+                        true
+                    )
+                )
+                {
+                    if (skinnedMeshRenderer.sharedMesh == null)
+                        continue;
+
+                    var targetPathObj =
+                        $"{Directory.GetCurrentDirectory()}/EthanPose_{skinnedMeshRenderer.gameObject.name}.obj";
+                    var targetPathMtl =
+                        $"{Directory.GetCurrentDirectory()}/EthanPose_{skinnedMeshRenderer.gameObject.name}.mtl";
+
+                    var obj = objWriter.WriteOBJ(
+                        Path.GetFileNameWithoutExtension(targetPathObj),
+                        skinnedMeshRenderer.sharedMesh,
+                        skinnedMeshRenderer.sharedMaterials
+                    );
+                    File.WriteAllText(targetPathObj, obj);
+
+                    var mtl = mtlWriter.WriteMTL(
+                        Path.GetFileNameWithoutExtension(targetPathMtl),
+                        skinnedMeshRenderer.sharedMaterials
+                    );
+                    File.WriteAllText(targetPathMtl, mtl);
+
+                    var textures = skinnedMeshRenderer.sharedMaterials.Select(x => x.mainTexture);
+                    foreach (var tex in textures)
+                    {
+                        var buf = texWriter.WriteTexture(tex);
+                        File.WriteAllBytes(texWriter.NameTexture(tex), buf);
+                    }
+                }
+
+                state = State.Idle;
             }
     }
 }
