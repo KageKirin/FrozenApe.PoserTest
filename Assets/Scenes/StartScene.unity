@@ -151,6 +151,7 @@ MonoBehaviour:
   state: 0
   targetGameObject: {fileID: 564326379}
   frozenGameObject: {fileID: 0}
+  poseJson: {fileID: 4900000, guid: 25389ce343c92456f96efb36a7485c62, type: 3}
   posedBones:
     bones: []
 --- !u!4 &158645029

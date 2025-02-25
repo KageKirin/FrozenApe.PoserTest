@@ -22,6 +22,7 @@ namespace Game
         public State state = State.Idle;
         public GameObject targetGameObject;
         public GameObject frozenGameObject;
+        public TextAsset poseJson;
         public PosedBoneContainer posedBones;
 
         void Start()
@@ -33,18 +34,13 @@ namespace Game
                 targetGameObject
             );
 
-            var path = $"{Application.dataPath}/apose.json";
-            var json = File.ReadAllText(path);
-            if (string.IsNullOrEmpty(json))
-            {
-                Debug.LogError($"Failed to read {path}.");
-                return;
-            }
+            Debug.AssertFormat(poseJson != null, "pose.json is not set {0}", poseJson);
+            Debug.AssertFormat(poseJson.text != string.Empty, "pose.json is empty {0}", poseJson);
 
-            posedBones = JsonSerialization.FromJson<PosedBoneContainer>(json);
+            posedBones = JsonSerialization.FromJson<PosedBoneContainer>(poseJson.text);
             if (posedBones == null || posedBones.bones.Count == 0)
             {
-                Debug.LogError($"Could not read posed bones in {path}.");
+                Debug.LogError($"Could not read posed bones in {poseJson.name}.");
                 return;
             }
 
