@@ -57,6 +57,8 @@ namespace Game
 
             if (state == State.Pose)
             {
+                Debug.Log($"posing {targetGameObject.name}");
+
                 IRigPuppeteer rigPuppeteer = new RigPuppeteer();
                 var transforms = targetGameObject.GetComponentsInChildren<Transform>(
                     includeInactive: true
@@ -69,6 +71,8 @@ namespace Game
 
             if (state == State.Freeze)
             {
+                Debug.Log($"freezing {targetGameObject.name}");
+
                 IPoseFreezer poseFreezer = new PoseFreezer();
                 var frozenMaterials = poseFreezer.Freeze(targetGameObject);
                 frozenGameObject = new() { name = $"frozen_{targetGameObject.name}" };
@@ -103,6 +107,8 @@ namespace Game
 
             if (state == State.Export)
             {
+                Debug.Log($"exporting {frozenGameObject.name}");
+
                 ITextureWriter texWriter = new TextureTGAWriter();
                 IWavefrontOBJWriter objWriter = new WavefrontOBJWriter();
                 IWavefrontMTLWriter mtlWriter = new WavefrontMTLWriter(texWriter);
@@ -124,6 +130,7 @@ namespace Game
                             ? meshRenderer.sharedMaterials
                             : Array.Empty<Material>();
 
+                    Debug.Log($"writing {targetPathObj}");
                     var obj = objWriter.WriteOBJ(
                         Path.GetFileNameWithoutExtension(targetPathObj),
                         meshFilter.sharedMesh,
@@ -131,6 +138,7 @@ namespace Game
                     );
                     File.WriteAllText(targetPathObj, obj);
 
+                    Debug.Log($"writing {targetPathMtl}");
                     var mtl = mtlWriter.WriteMTL(
                         Path.GetFileNameWithoutExtension(targetPathMtl),
                         materials
@@ -159,6 +167,7 @@ namespace Game
                     var targetPathMtl =
                         $"{Directory.GetCurrentDirectory()}/EthanPose_{skinnedMeshRenderer.gameObject.name}.mtl";
 
+                    Debug.Log($"writing {targetPathObj}");
                     var obj = objWriter.WriteOBJ(
                         Path.GetFileNameWithoutExtension(targetPathObj),
                         skinnedMeshRenderer.sharedMesh,
@@ -166,6 +175,7 @@ namespace Game
                     );
                     File.WriteAllText(targetPathObj, obj);
 
+                    Debug.Log($"writing {targetPathMtl}");
                     var mtl = mtlWriter.WriteMTL(
                         Path.GetFileNameWithoutExtension(targetPathMtl),
                         skinnedMeshRenderer.sharedMaterials
