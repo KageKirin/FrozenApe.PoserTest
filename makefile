@@ -123,7 +123,13 @@ refresh-token:
 	$(foreach url,$(GCPNPM), GCPRefreshUpmToken -r $(url) -c ~/.upmconfig.toml)
 
 r run: $(TARGET_APP)
+	$(TARGET_EXE) -logFile - -batchmode
+
+rng run-no-graphics: $(TARGET_APP)
 	$(TARGET_EXE) -logFile - -batchmode -nographics
+
+rg run-gui: $(TARGET_APP)
+	$(TARGET_EXE) -logFile -
 
 
 help: $(TARGET_APP)
