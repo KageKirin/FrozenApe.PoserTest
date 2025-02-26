@@ -128,6 +128,9 @@ r run: $(TARGET_APP)
 rng run-no-graphics: $(TARGET_APP)
 	$(TARGET_EXE) -logFile - -batchmode -nographics
 
+rg run-gui: $(TARGET_APP)
+	$(TARGET_EXE) -logFile -
+
 
 help: $(TARGET_APP)
 	$(TARGET_EXE) -logFile - -batchmode -nographics --help
