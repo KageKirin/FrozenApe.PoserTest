@@ -157,7 +157,7 @@ namespace Game
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogError($"failed to export {tex.name}: {ex}");
+                            Debug.LogError($"failed to export {targetPathTex}: {ex}");
                         }
                     }
                 }
@@ -203,7 +203,7 @@ namespace Game
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogError($"failed to export {tex.name}: {ex}");
+                            Debug.LogError($"failed to export {targetPathTex}: {ex}");
                         }
                     }
                 }
