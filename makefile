@@ -125,6 +125,9 @@ refresh-token:
 r run: $(TARGET_APP)
 	$(TARGET_EXE) -logFile - -batchmode -nographics
 
+rng run-no-graphics: $(TARGET_APP)
+	$(TARGET_EXE) -logFile - -batchmode -nographics
+
 
 help: $(TARGET_APP)
 	$(TARGET_EXE) -logFile - -batchmode -nographics --help
